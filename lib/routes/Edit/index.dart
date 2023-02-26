@@ -13,7 +13,7 @@ class Edit extends StatefulWidget {
 }
 
 class _EditState extends State<Edit> {
-  List<bool> checkedArr = [];
+  late DetailToEditArgs args = DetailToEditArgs();
 
   @override
   void initState() {
@@ -21,17 +21,17 @@ class _EditState extends State<Edit> {
     super.initState();
 
     Future.delayed(Duration.zero, () {
-      final args =
+      final pars =
           ModalRoute.of(context)?.settings.arguments as DetailToEditArgs;
 
-      checkedArr = List.filled(args.itemList?.length ?? 0, true).toList();
+      setState(() {
+        args = DetailToEditArgs.fromJson(pars.toJson());
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings.arguments as DetailToEditArgs;
-
     return Scaffold(
       appBar: MyAppbar(context, args.data?.title ?? ''),
       body: Column(
@@ -64,8 +64,7 @@ class _EditState extends State<Edit> {
             child: Column(
               children: args.itemList?.asMap().entries.map(
                     (e) {
-                      final isChecked =
-                          checkedArr.isNotEmpty && checkedArr[e.key];
+                      final isChecked = e.value.checked ?? false;
 
                       return Container(
                           margin: e.key != (args.itemList?.length ?? 0) - 1
@@ -74,7 +73,8 @@ class _EditState extends State<Edit> {
                           child: StepItem(
                             onTap: () {
                               setState(() {
-                                checkedArr[e.key] = !checkedArr[e.key];
+                                args.itemList![e.key].checked =
+                                    !(args.itemList![e.key].checked ?? false);
                               });
                             },
                             image: e.value.image ?? '',
@@ -111,7 +111,7 @@ class _EditState extends State<Edit> {
       floatingActionButton: FloatButton(
         text: 'Done',
         onTap: () {
-          Navigator.of(context).pop();
+          Navigator.of(context).pop(args.itemList);
         },
       ),
     );

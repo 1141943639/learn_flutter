@@ -4,6 +4,7 @@ import 'package:learn_flutter/routes/Detail/widgets/StepItem.dart';
 import 'package:learn_flutter/widgets/FloatButton.dart';
 
 import '../../models/Detail.dart';
+import '../../widgets/DashedLine.dart';
 import '../../widgets/MyAppbar.dart';
 
 class DetailPage extends StatefulWidget {
@@ -15,6 +16,11 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   List<ListDataModel> itemList = [];
+  List<ListDataModel> oriItemList = [];
+
+  bool showSteps = true;
+  double itemHeight = 110;
+  double itemMargin = 20;
 
   @override
   void initState() {
@@ -24,9 +30,40 @@ class _DetailPageState extends State<DetailPage> {
       final args = ModalRoute.of(context)?.settings.arguments as ListDataModel;
 
       setState(() {
-        itemList = List.filled(5, ListDataModel(image: args.image));
+        create() => List.filled(5, null)
+            .map((e) => ListDataModel(image: args.image, checked: true))
+            .toList();
+
+        itemList = create();
+        oriItemList = create();
       });
     });
+  }
+
+  get showItemList {
+    return itemList
+        .asMap()
+        .entries
+        .where((element) => element.value.checked ?? false)
+        .map((e) => e.value)
+        .toList()
+        .asMap()
+        .entries;
+  }
+
+  bool get isChange {
+    if (itemList.isEmpty) return false;
+
+    return !itemList.asMap().entries.every((element) =>
+        itemList[element.key].checked == oriItemList[element.key].checked);
+  }
+
+  double get dashedHeight {
+    final height = (showItemList.length * itemHeight) +
+        ((showItemList.length - 1) * itemMargin) -
+        itemHeight;
+
+    return height < 0 ? 0 : height;
   }
 
   @override
@@ -36,7 +73,7 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       appBar: MyAppbar(context, args.title ?? ''),
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: 140),
+        padding: const EdgeInsets.only(bottom: 140),
         child: Column(
           children: [
             Row(
@@ -79,7 +116,6 @@ class _DetailPageState extends State<DetailPage> {
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              margin: const EdgeInsets.only(bottom: 100),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -89,40 +125,137 @@ class _DetailPageState extends State<DetailPage> {
                   Expanded(child: Container()),
                   InkWell(
                     onTap: () async {
-                      final result = await Navigator.of(context).pushNamed(
+                      if (isChange) {
+                        setState(() {
+                          itemList = [...oriItemList]
+                              .map((e) => ListDataModel.fromJson(e.toJson()))
+                              .toList();
+
+                          showSteps = true;
+                        });
+                        return;
+                      }
+
+                      final result = (await Navigator.of(context).pushNamed(
                           'edit',
-                          arguments:
-                              DetailToEditArgs(itemList: itemList, data: args));
+                          arguments: DetailToEditArgs(
+                              itemList: [...itemList]
+                                  .map(
+                                      (e) => ListDataModel.fromJson(e.toJson()))
+                                  .toList(),
+                              data: args))) as List<ListDataModel>?;
 
                       if (result == null) return;
 
-                      print(result);
+                      setState(() {
+                        itemList = result;
+                      });
                     },
                     child: Column(
-                      children: const [
+                      children: [
                         Icon(
-                          Icons.edit,
-                          color: Color.fromRGBO(0, 87, 151, 1),
+                          isChange ? Icons.restart_alt : Icons.edit,
+                          color: const Color.fromRGBO(0, 87, 151, 1),
                         ),
-                        Text('Edit',
-                            style: TextStyle(fontWeight: FontWeight.bold))
+                        Text(isChange ? 'RESET' : 'Edit',
+                            style: const TextStyle(fontWeight: FontWeight.bold))
                       ],
                     ),
                   )
                 ],
               ),
             ),
-            ...itemList
-                .asMap()
-                .entries
-                .map((e) => Container(
-                      margin: e.key != 4 ? EdgeInsets.only(bottom: 20) : null,
-                      child: StepItem(
-                        index: e.key,
-                        image: args.image ?? '',
+            Container(
+              height: 80,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: isChange
+                  ? Stack(
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: Container(
+                                  height: 2,
+                                  color: const Color.fromRGBO(239, 239, 239, 1),
+                                ))
+                              ],
+                            )
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      showSteps = !showSteps;
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 10),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: const Color.fromRGBO(
+                                            239, 239, 239, 1)),
+                                    child: const Text(
+                                      'Show Steps',
+                                      style: TextStyle(
+                                          color:
+                                              Color.fromRGBO(137, 137, 137, 1),
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    )
+                  : null,
+            ),
+            Stack(
+              children: [
+                Positioned(
+                    left: 32,
+                    top: itemHeight / 2,
+                    child: Container(
+                      height: dashedHeight,
+                      child: DashedLine(
+                        axis: Axis.vertical,
+                        color: const Color.fromRGBO(31, 87, 146, 1),
+                        dashedInterval: 3,
+                        dashedWeight: 1,
+                        dashedWidth: 1,
                       ),
-                    ))
-                .toList()
+                    )),
+                Positioned(
+                    child: Column(
+                  children: [
+                    ...(showSteps
+                        ? showItemList
+                            .map((e) => Container(
+                                  margin: e.key != showItemList.length - 1
+                                      ? EdgeInsets.only(bottom: itemMargin)
+                                      : null,
+                                  child: StepItem(
+                                      index: e.key,
+                                      image: args.image ?? '',
+                                      height: itemHeight),
+                                ))
+                            .toList()
+                        : [])
+                  ],
+                ))
+              ],
+            )
           ],
         ),
       ),

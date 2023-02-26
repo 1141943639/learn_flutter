@@ -5,8 +5,15 @@ class StepItem extends StatelessWidget {
   late int? index;
   late Widget? icon;
   late GestureTapCallback? onTap = () {};
+  late double height;
 
-  StepItem({Key? key, this.image = '', this.index, this.icon, this.onTap})
+  StepItem(
+      {Key? key,
+      this.image = '',
+      this.index,
+      this.icon,
+      this.onTap,
+      this.height = 100})
       : super(key: key);
 
   @override
@@ -36,7 +43,7 @@ class StepItem extends StatelessWidget {
             ),
             Expanded(
               child: Container(
-                height: 110,
+                height: height,
                 decoration: BoxDecoration(
                     boxShadow: const [
                       BoxShadow(
