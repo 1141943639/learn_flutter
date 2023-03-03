@@ -26,7 +26,7 @@ class FloatButton extends StatelessWidget {
                     borderRadius: BorderRadius.circular(50)))),
             child: Text(
               text,
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           ),
         ))

@@ -37,19 +37,19 @@ class _EditState extends State<Edit> {
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(left: 20),
+            padding: const EdgeInsets.only(left: 20),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Tour Stops',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 InkWell(
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                    child: Text('CANCEL'),
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    child: const Text('CANCEL'),
                   ),
                   onTap: () {
                     Navigator.of(context).pop();
@@ -60,7 +60,7 @@ class _EditState extends State<Edit> {
           ),
           Expanded(
               child: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(0, 80, 0, 140),
+            padding: const EdgeInsets.fromLTRB(0, 80, 0, 140),
             child: Column(
               children: args.itemList?.asMap().entries.map(
                     (e) {
@@ -68,7 +68,7 @@ class _EditState extends State<Edit> {
 
                       return Container(
                           margin: e.key != (args.itemList?.length ?? 0) - 1
-                              ? EdgeInsets.only(bottom: 20)
+                              ? const EdgeInsets.only(bottom: 20)
                               : null,
                           child: StepItem(
                             onTap: () {
@@ -82,17 +82,17 @@ class _EditState extends State<Edit> {
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                   color: isChecked
-                                      ? Color.fromRGBO(0, 87, 151, 1)
+                                      ? const Color.fromRGBO(0, 87, 151, 1)
                                       : null,
                                   borderRadius: BorderRadius.circular(100000),
                                   border: !isChecked
                                       ? Border.all(
-                                          color: Color.fromRGBO(0, 87, 151, 1))
+                                          color: const Color.fromRGBO(0, 87, 151, 1))
                                       : null),
                               width: 25,
                               height: 25,
                               child: isChecked
-                                  ? Icon(
+                                  ? const Icon(
                                       Icons.done,
                                       color: Colors.white,
                                       size: 20,

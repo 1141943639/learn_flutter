@@ -226,7 +226,7 @@ class _DetailPageState extends State<DetailPage> {
                 Positioned(
                     left: 32,
                     top: itemHeight / 2,
-                    child: Container(
+                    child: SizedBox(
                       height: dashedHeight,
                       child: DashedLine(
                         axis: Axis.vertical,

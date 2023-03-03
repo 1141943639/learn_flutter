@@ -21,22 +21,22 @@ class StepItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              margin: EdgeInsets.only(right: 20),
+              margin: const EdgeInsets.only(right: 20),
               child: icon ??
                   ClipOval(
                     child: Container(
                       alignment: Alignment.center,
-                      color: Color.fromRGBO(0, 87, 151, 1),
+                      color: const Color.fromRGBO(0, 87, 151, 1),
                       width: 25,
                       height: 25,
                       child: Text(
                         ((index ?? 0) + 1).toString(),
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -65,7 +65,7 @@ class StepItem extends StatelessWidget {
                     Expanded(
                         flex: 7,
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,10 +76,10 @@ class StepItem extends StatelessWidget {
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                               Container(
-                                padding: EdgeInsets.symmetric(vertical: 5),
-                                child: Text.rich(TextSpan(children: [
+                                padding: const EdgeInsets.symmetric(vertical: 5),
+                                child: const Text.rich(TextSpan(children: [
                                   TextSpan(
-                                      text: '20 mins · ',
+                                      text: '20 mains · ',
                                       style: TextStyle(
                                           color: Color.fromRGBO(
                                               144, 144, 144, 1))),
